@@ -1,4 +1,5 @@
-from main import *
+import os
+from main import AddressBook, Record, Phone, Birthday
 
 def input_error(func):
     """
@@ -13,7 +14,7 @@ def input_error(func):
     def wrapper(*args, **kwargs):
         
         if DEBUG:
-            print(f'Wrapper: func - {func.__name__}, args - {args}')
+            print(f'Wrapper: func - {func.__name__}, args - {args}\n')
         
         try:
             return func(*args, **kwargs)
@@ -31,17 +32,6 @@ def input_error(func):
         
     return wrapper
 
-# # Попередній варіант (без класів)
-# @input_error
-# def add(name, phone_number):
-#     """
-#     "add ..."
-#     За цією командою бот зберігає у пам'яті (у словнику наприклад) новий контакт. 
-#     Замість ... користувач вводить ім'я та номер телефону, обов'язково через пробіл.
-#     """
-#     DICT_PHONES[name] = phone_number
-
-#     return f'Added the new contact: {name = }; {phone_number}'
 
 @input_error
 def add(name, phone_number):
@@ -52,13 +42,8 @@ def add(name, phone_number):
     """
     record = book.find(name)
     if record is None:
-
-        new_record = Record(name)
-        new_record.add_phone(phone_number)
-        book.add_record(new_record)
-
-        return new_record
-    
+        book.add_record(Record(name=name, phone=phone_number))
+        return book.find(name)
     else:
         record.add_phone(phone_number)
 
@@ -75,19 +60,6 @@ def add_birthday(name, date):
     record.add_birthday(date)
 
     return record
-
-
-# # Попередній варіант (без класів)
-# @input_error
-# def change(name, phone_number):
-#     """
-#     "change ..."
-#     За цією командою бот зберігає в пам'яті новий номер телефону існуючого контакту. 
-#     Замість ... користувач вводить ім'я та номер телефону, обов'язково через пробіл.
-#     """
-#     DICT_PHONES[name] = phone_number
-
-#     return f'The contact: {name = } was changed phone number to {phone_number}'
 
 
 @input_error
@@ -116,8 +88,6 @@ def delete_record(name):
     return f'The contact: {name = } was deleted!'
 
 
-
-
 def goodbye():
     """
     "good bye", 
@@ -133,24 +103,16 @@ def hello():
     "hello"
     Відповідає у консоль "How can I help you?"
     """
-    return 'How can I help you?'
+    return '\nHow can I help you?'
 
 
-# # Попередній варіант (без класів)
-# @input_error
-# def phone(name):
-#     """
-#     "phone ...."
-#     За цією командою бот виводить у консоль номер телефону для зазначеного контакту. 
-#     Замість ... користувач вводить ім'я контакту, чий номер треба показати.
-#     """
-#     if name in DICT_PHONES:
-#         result = 'The phone dictionary has next contact:\n'
-#         result += f'   {name:<15} {DICT_PHONES[name]}'
-#     else:
-#         result = 'No results. The phone dictionary hasn\'t contact with this name'
+def helper() -> str:
+    """
+    Функція виводить підказку з доступних користувачу команд
+    """
+    help_msg = [f'{ind}. {command}' for ind, command in enumerate(COMMANDS.keys(), start=1)]
+    return '\n'.join(help_msg)
 
-#     return result
 
 @input_error
 def phone(name):
@@ -161,22 +123,6 @@ def phone(name):
     """
     return book.find(name)
 
-
-
-# # Попередній варіант (без класів)
-# def show_all():
-#     """
-#     "show all"
-#     За цією командою бот виводить всі збереженні контакти з номерами телефонів у консоль.
-#     """
-#     if not DICT_PHONES:
-#         return 'The phone dictionary is empty'
-    
-#     result = 'The phone dictionary has next contacts:\n'
-#     for count, (name, phone) in enumerate(DICT_PHONES.items()):
-#         result += f'{count+1:<2} {name:<15} {phone}\n'
-
-#     return result
 
 def remove_phone(name, phone):
     """
@@ -190,13 +136,12 @@ def remove_phone(name, phone):
     return f'The number: {phone = } was deleted from contact: {record.name}!\n {record}'
 
 
-
-
 def show_all():
     """
     "show all"
     За цією командою бот виводить всі збереженні контакти з номерами телефонів у консоль.
     """
+
     return book
 
 
@@ -238,28 +183,39 @@ def get_handler(command):
 
 
 def main():
-
     cycle = 0
+
+    print(hello())
+    print(helper())
+
     while True:
+        cycle += 1
 
         if DEBUG:
-            cycle += 1
             print(f'\n{cycle = }')
 
         # Type of requests:
-        # ++  hello
-        # ++  add Vitalii 0637609640
-        # ++  change Vitalii 0984520
-        # ++  phone Vitalii
-        # ++  show all
-        # ++  good bye
-        # ++  close
-        # ++  exit    
-        #  +  delete Vitalii
-        #  +  remove_phone Vitalii 0637609640
-        #  +  add_birthday Vitalii 12.05.1990
+        # + hello
+        #  find some_info 
+        #  add Vitalii 0637609640
+        #  change Vitalii 0984520
+        #       phone Vitalii
+        #  add_birthday Vitalii 12.05.1990
+        #  remove_phone Vitalii 0637609640
+        #  delete Vitalii
+        
+        # + show all
+        # + good bye
+        # + close
+        # + exit    
+        # + save
+        # + load
 
-        user_input = input('>>> ')
+         
+        user_input = input('\nEnter "help" for more information.\n>>> ')
+
+        # Очищення екрану після 
+        os.system('cls')
 
         request = parse_input(user_input)
 
@@ -275,51 +231,40 @@ def main():
         else:
             result = handler
 
+        # print(window_output(name=NAME))
         print(result)
 
         if result == 'Good Bye!':
             break
 
+        
+
     
 DEBUG = True
 
 if __name__ == '__main__':
+    NAME = 'BOT HELPER. Modul 12'
 
     # Створення нової адресної книги
     book = AddressBook()
 
-    # Створення тестового запису для Vitalii
-    vitalii_record = Record('Vitalii')
-    vitalii_record.add_phone('0637609640')
-    vitalii_record.add_phone('5555555555')
-    vitalii_record.add_birthday('12.05.1990')
-
-    # Додавання запису Vitalii до адресної книги
-    book.add_record(vitalii_record)
-
-    # Створення тестового запису для Oleg
-    oleg_record = Record('Oleg')
-    oleg_record.add_phone('0637546853')
-    # Додавання запису Oleg до адресної книги
-    book.add_record(oleg_record)
-
     COMMANDS = {
         'hello': hello,
-        'good bye' : goodbye,
-        'close' : goodbye,
-        'exit' : goodbye,
-        'show all' : show_all,
-        'phone' : phone,
-        'add' : add,
-        'change' : change,
-        'delete' : delete_record,
-        'remove_phone' : remove_phone,
-        'add_birthday' : add_birthday
-    }
-
-    DICT_PHONES = {
-        'Vitalii': '0637609640',
-        'Oleg': '0637546853'
+        'show all': show_all,
+        'find': book.find,
+        'phone': phone,
+        'add': add,
+        'change': change,
+        'delete': delete_record,
+        'remove_phone': remove_phone,
+        'add_birthday': add_birthday,
+        'load': book.load,
+        'save': book.save,
+        'mode': book.set_mode,
+        'help': helper,
+        'good bye': goodbye,
+        'close': goodbye,
+        'exit': goodbye
     }
 
     main()
