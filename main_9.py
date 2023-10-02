@@ -251,7 +251,7 @@ if __name__ == '__main__':
     COMMANDS = {
         'hello': hello,
         'show all': show_all,
-        'find': book.find,
+        'find': book.find_record,
         'phone': phone,
         'add': add,
         'change': change,
