@@ -240,7 +240,7 @@ def main():
         
 
     
-DEBUG = True
+DEBUG = False
 
 if __name__ == '__main__':
     NAME = 'BOT HELPER. Modul 12'

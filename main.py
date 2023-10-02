@@ -48,7 +48,8 @@ class Birthday(Field):
                 birthday_date = date(year=int(year), month=int(month), day=int(day))
                 self._value = birthday_date
             except ValueError:
-                raise ValueError('Date of birthday is not valid! (dd.mm.yyyy)')   
+                raise ValueError('Date of birthday is not valid! (dd.mm.yyyy)')
+    
 
 
 class Name(Field):
@@ -123,7 +124,7 @@ class Record:
     
     def __str__(self) -> str:
         days = str(self.days_to_birthday())
-        return f" Contact name: {self.name.value:<10} birthday: {str(self.birthday.value):<11}({days:<4} days) phones: {'; '.join(p.value for p in self.phones)}"
+        return f" Contact name: {self.name.value:<10} birthday: {str(self.birthday):<11}({days:<4} days) phones: {'; '.join(p.value for p in self.phones)}"
     
     def __repr__(self) -> str:
         self.phones_repr = ', '.join([phone.value for phone in self.phones])
@@ -294,7 +295,9 @@ class AddressBook(UserDict):
             for row in csv_reader:
                 name, birthday, *phones = row
                 record = Record(name)
-                record.add_birthday(birthday)
+                if birthday != '':
+                    year, month, day = birthday.split('-')
+                    record.add_birthday(f'{day}.{month}.{year}')
                 for phone in phones:
                     record.add_phone(phone)
                 self.add_record(record)
@@ -330,7 +333,6 @@ class AddressBook(UserDict):
 
 
 if __name__ == '__main__':
-
 
     # print('----- Phone(Field)')
     # phone = Phone('0123456789')
