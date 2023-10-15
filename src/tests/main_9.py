@@ -1,5 +1,5 @@
 import os
-from main import AddressBook, Record, Phone, Birthday
+from main_old import AddressBook, Record, Phone, Birthday, Name, Phone
 
 def input_error(func):
     """
@@ -180,6 +180,7 @@ def parse_input(user_input):
 @input_error
 def get_handler(command):
     return COMMANDS[command]
+
 
 
 def main():
