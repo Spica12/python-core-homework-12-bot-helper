@@ -18,8 +18,8 @@ class Bot:
             'hello': self.say_hello,
             'close': self.say_goodbye,
             'help': self.help,
-            # 'add': self.add,
-            'show all': self.show_all_contacts,
+            'show contacts': self.show_all_contacts,
+            'show notes': self.show_all_notes,
             'add contact': self.add_contact,
             'delete contact': self.delete_contact,
             'add phone': self.add_phone
@@ -75,38 +75,21 @@ class Bot:
 
 
     
-    def add_phone(self, name, phone):
+    def add_phone(self, data):
+        print(data)
+        name = data[0]
+        phone = data[1]
         record: ContactRecord = self.addressbook.find(name)
+        print(record)
         record.add_phone(phone)
 
     
 
-    def add(self, data):
-        print(repr(data))
-        type_field = data[0]
-        name = data[1]
-        print(type_field)
-
-        if type_field == 'contact':
-            record = ContactRecord(name)
-            self.addressbook.add_record(record)
-            return f'Contact was added'
-        if type_field == 'note':
-            record = NoteRecord(name)
-            self.notebook.add_record(record)
-            return f'Note was added'
-
-        record = self.addressbook.find(type_field)
-        if not record:
-            record = self.notebook.find(type_field)
-        if not record:
-            return f'Record not found'
-        
-        field = record.find(type_field)
-        record.add(*value)
-
     def show_all_contacts(self):
         return self.addressbook.show_all()
+    
+    def show_all_notes(self):
+        return self.notebook.show_all()
 
 
     

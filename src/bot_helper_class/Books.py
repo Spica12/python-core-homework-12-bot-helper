@@ -5,8 +5,6 @@ from Records import *
 
 class Book(UserDict):
 
-    # def add_record(self, record: Record):
-    #     self.data[record.name.value] =  record
 
     def add_record(self, name):
         pass
@@ -14,15 +12,12 @@ class Book(UserDict):
     def change_record(self, record: Record):
         pass
 
-    # def delete(self, record: Record):
-    #     pass
-
     def delete_record(self, record: Record):
         pass
 
     def find(self, name):
         for key in self.data:
-            if key == name:
+            if key.lower() == name.lower():
                 return self.data[key]
             
     def show_all(self):
