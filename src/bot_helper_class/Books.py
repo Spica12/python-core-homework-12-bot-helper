@@ -6,16 +6,13 @@ from Records import *
 class Book(UserDict):
 
 
-    def add_record(self, name):
-        pass
-
-    def change_record(self, record: Record):
-        pass
+    def add_record(self, record: Record):
+        self.data[record.name.value] = record
 
     def delete_record(self, record: Record):
-        pass
+        del self.data[record.name.value]
 
-    def find(self, name):
+    def find_record(self, name):
         for key in self.data:
             if key.lower() == name.lower():
                 return self.data[key]
@@ -31,12 +28,7 @@ class Book(UserDict):
 
 class AddressBook(Book):
     
-    def add_record(self, record: Record):
-        self.data[record.name.value] = record
-
-    def delete_record(self, record: Record):
-        del self.data[record.name.value]
-
+    pass
 
 class Notebook(Book):
     pass

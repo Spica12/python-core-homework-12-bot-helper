@@ -13,7 +13,6 @@ class Bot:
         self.addressbook = AddressBook()
         self.notebook = Notebook()
         
-
         self.COMMANDS_DICT = {
             'hello': self.say_hello,
             'close': self.say_goodbye,
@@ -70,7 +69,7 @@ class Bot:
 
     def delete_contact(self, data):
         name = data[0]
-        record: ContactRecord = self.addressbook.find(name)
+        record: ContactRecord = self.addressbook.find_record(name)
         self.addressbook.delete_record(record)
 
 
@@ -79,7 +78,7 @@ class Bot:
         print(data)
         name = data[0]
         phone = data[1]
-        record: ContactRecord = self.addressbook.find(name)
+        record: ContactRecord = self.addressbook.find_record(name)
         print(record)
         record.add_phone(phone)
 
