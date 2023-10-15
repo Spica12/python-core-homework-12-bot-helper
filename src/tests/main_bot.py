@@ -57,8 +57,9 @@ class Bot():
 class MainWindow():
     
     def __init__(self) -> None:
-        self.width = 71
-        self.high = 5
+
+        self.width = os.get_terminal_size()[0]
+        self.high = os.get_terminal_size()[1] - 10
         self.hor_border = '-'
         self.ver_border = '|'
 
@@ -96,6 +97,10 @@ class MainWindow():
     def show(self) -> None:
          # Оновлення екрану 
         os.system('cls')
+        self.width = os.get_terminal_size()[0]
+        self.high = os.get_terminal_size()[1] - 10
+       
+
         
         output = ''
         # Title
