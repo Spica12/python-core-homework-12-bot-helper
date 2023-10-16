@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 
 
@@ -68,15 +69,37 @@ class Address(Field):
 
 
 class Email(Field):
+    
+    def validate(self, email: str) -> str:
+        pattern = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9]+\.[a-zA-Z0-9.]*\.*[com|org|edu|ua|net]{3}$)"
+        is_valid = re.search(pattern, email)
+        if not is_valid:
+            return f"Email '{email}' is not valid."
+        return email
+    
+
+class Date(Field):
     pass
 
 
-if __name__ == '__main__':
-    field_name = Name('vitalii savenko')
-    print(field_name)
 
-    field_phone = Phone('+38(063)-760-96-40')
+                                                                                            #TODO Видалити вкінці
+# Приклад використання полів.
+if __name__ == '__main__':
+    field_name = Name('taras shevchenko')
+    print(field_name)                           # Taras Shevchenko
+
+    field_phone = Phone('+38(063)-500-12-40')   # 380635001240
     print(field_phone)
 
     field_birthday = Birthday('1990-05-12')
-    print(field_birthday)
+    print(field_birthday)                       # 1990-05-12
+
+    field_date = Date(datetime.now())           
+    print(field_date)                           # 2023-10-16 09:35:22.222808
+
+    field_email_valid = Email('test.email@gmail.com')  
+    print(field_email_valid)                          # test.email@gmail.com 
+
+    field_email_not_valid = Email('test:!@email@gmail.com')  
+    print(field_email_not_valid)                          # Email 'test:!@email@gmail.com' is not valid.

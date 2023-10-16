@@ -1,6 +1,7 @@
 import os
 
 from Bot import Bot
+from backup import Backup, PickleStorage
 
 
 def main():
@@ -9,7 +10,16 @@ def main():
     і відправляємо його в середину застосунку на обробку.
     :return:
     """
-    bot = Bot('Bob_bot')
+
+
+    storage_bot = Backup(PickleStorage('bot.pickle'))
+
+    try:
+        bot = storage_bot.load()
+    except FileNotFoundError:
+        bot = Bot('Bob_bot')
+
+    
     bot.say_hello()
 
     try:
@@ -27,7 +37,7 @@ def main():
                 break
     finally:
         # contacts_dict.save_contacts_to_file()
-        pass
+        storage_bot.save(bot)
 
 
 if __name__ == '__main__':

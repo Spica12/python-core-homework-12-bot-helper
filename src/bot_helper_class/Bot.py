@@ -10,6 +10,7 @@ class Bot:
 
     def __init__(self, name):
         self.name = Name(name)
+
         self.addressbook = AddressBook()
         self.notebook = Notebook()
         
